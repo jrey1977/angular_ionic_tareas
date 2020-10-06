@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Lista } from 'src/app/models/lista.model';
 import { DeseosService } from 'src/app/service/deseos.service';
-
 import { AlertController } from '@ionic/angular';
 
 @Component({
@@ -12,18 +10,16 @@ import { AlertController } from '@ionic/angular';
 })
 export class Tab1Page {
 
-  listasPendientes:Lista[];
 
   constructor( 
     public _deseoService: DeseosService,
     private _router: Router,
     public alertController: AlertController
     ) {
-      this.listasPendientes = this._deseoService.listas;
+
   }
 
   async agregarLista(){
-    //this._router.navigateByUrl('/tabs/tab1/agregar');
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Nueva lista',
@@ -31,10 +27,32 @@ export class Tab1Page {
         {
           name: 'titulo',
           type: 'text',
-          placeholder: 'Nombre de la lista' 
+          placeholder: 'Nombre de la lista'
         }
       ],
-      buttons: ['OK']
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancelar');
+          }
+        },
+        {
+          text: 'Crear',
+          handler: (data) => {
+            if( data.titulo.length > 0 ){
+                // Creo lista y guardo su id porque es el dato que retorna la función del service
+                const idLista = this._deseoService.crearLista(data.titulo);
+
+                // Con la id de la lista creada, me redirijo a la misma
+                this._router.navigateByUrl('/tabs/tab1/agregar/'+idLista);
+            }else{
+                return;
+            }
+          }
+        }
+      ]
     });
 
     alert.present();
