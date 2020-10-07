@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { threadId } from 'worker_threads';
 import { Lista } from '../models/lista.model';
 
 @Injectable({
@@ -22,6 +21,14 @@ export class DeseosService {
 
     // Devuelvo la id de la lista creada para redirigirme a la misma
     return nuevaLista.id;
+  }
+
+  editarLista(id:number, titulo:string){
+    let listaEditada = this.listas.find( listaData => {
+      return listaData.id === id;
+    })
+    listaEditada[titulo] = titulo;
+    this.guardarLista();
   }
 
   guardarLista(){
